@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>هل MSL المسار الصحيح لك؟</title>
+<script src="../shared/scorm_api.js"></script>
+</head>
+<body>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap');
+
+.msl4 *{box-sizing:border-box;margin:0;padding:0;}
+.msl4{font-family:'Cairo',sans-serif;direction:rtl;line-height:1.7;color:#0F1923;}
+
+/* HERO */
+.msl4-hero{
+  background:linear-gradient(155deg,#061B19 0%,#0A3330 50%,#061810 100%);
+  padding:52px 28px 68px;text-align:center;position:relative;overflow:hidden;border-radius:16px;margin-bottom:4px;
+}
+.msl4-hero::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:36px 36px;}
+.msl4-htag{display:inline-flex;align-items:center;gap:7px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.7);font-size:10px;font-weight:700;padding:5px 18px;border-radius:50px;margin-bottom:20px;letter-spacing:1.2px;text-transform:uppercase;position:relative;}
+.msl4-hero h1{font-size:clamp(22px,4.5vw,36px);font-weight:900;color:white;line-height:1.25;margin-bottom:12px;position:relative;}
+.msl4-hero h1 .g{background:linear-gradient(135deg,#FDE68A,#D97706);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.msl4-hero h1 .t{background:linear-gradient(135deg,#A7F3D0,#0D8C87);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.msl4-hero p{font-size:14px;color:rgba(255,255,255,0.62);max-width:520px;margin:0 auto;line-height:1.9;position:relative;}
+
+/* WRAP */
+.msl4-wrap{max-width:860px;margin:0 auto;padding:0 20px;}
+
+/* PICKER */
+.msl4-pick{padding:52px 0 36px;}
+.msl4-tag{display:inline-flex;align-items:center;gap:8px;font-size:11px;font-weight:800;color:#0B6E6A;text-transform:uppercase;letter-spacing:1.5px;margin-bottom:10px;}
+.msl4-tag::before{content:'';width:18px;height:2px;background:#0B6E6A;border-radius:1px;}
+.msl4-wrap h2{font-size:clamp(18px,3vw,26px);font-weight:900;margin-bottom:10px;line-height:1.3;color:#0F1923;}
+.msl4-wrap h2 em{font-style:normal;color:#0B6E6A;}
+.msl4-lead{font-size:13.5px;color:#3A4F60;line-height:1.9;margin-bottom:24px;}
+
+/* BG CARDS */
+.msl4-bgcards{display:grid;grid-template-columns:repeat(auto-fill,minmax(145px,1fr));gap:10px;margin:20px 0;}
+.msl4-bgc{background:#F7F9FC;border:2px solid #E5EAF0;border-radius:14px;padding:18px 14px;text-align:center;cursor:pointer;transition:all 0.2s;user-select:none;}
+.msl4-bgc:hover{border-color:#0B6E6A;background:#E4F3F2;}
+.msl4-bgc.sel{border-color:#0B6E6A;background:#E4F3F2;box-shadow:0 0 0 3px rgba(11,110,106,0.15);}
+.msl4-bgc .ic{font-size:26px;margin-bottom:8px;}
+.msl4-bgc h4{font-size:12.5px;font-weight:800;margin-bottom:3px;}
+.msl4-bgc p{font-size:11px;color:#8A9BB0;margin:0;}
+.msl4-bgc .chk{width:18px;height:18px;border-radius:50%;border:2px solid #E5EAF0;margin:8px auto 0;display:flex;align-items:center;justify-content:center;font-size:10px;transition:all 0.2s;}
+.msl4-bgc.sel .chk{background:#0B6E6A;border-color:#0B6E6A;color:white;}
+
+/* BTN */
+.msl4-btn{display:inline-flex;align-items:center;gap:8px;margin-top:20px;background:linear-gradient(135deg,#0B6E6A,#0D8C87);color:white;font-family:'Cairo',sans-serif;font-size:14px;font-weight:800;padding:13px 28px;border-radius:50px;border:none;cursor:pointer;box-shadow:0 6px 20px rgba(11,110,106,0.3);transition:all 0.2s;opacity:0.4;pointer-events:none;}
+.msl4-btn.ready{opacity:1;pointer-events:all;}
+.msl4-btn:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(11,110,106,0.4);}
+
+/* BRIDGE SECTION */
+.msl4-bridge{padding:44px 0;display:none;}
+.msl4-bridge.vis{display:block;}
+
+/* PERSONAL MSG */
+.msl4-pmsg{background:linear-gradient(135deg,#E4F3F2,#D1EDEC);border:1px solid rgba(11,110,106,0.2);border-radius:16px;padding:22px 24px;margin-bottom:32px;display:flex;gap:14px;align-items:flex-start;}
+.msl4-pmsg .pic{font-size:28px;flex-shrink:0;}
+.msl4-pmsg h3{font-size:15px;font-weight:900;color:#0B6E6A;margin-bottom:5px;}
+.msl4-pmsg p{font-size:13px;color:#3A4F60;margin:0;line-height:1.8;}
+
+/* SVG STAIR */
+.msl4-svgwrap{background:#F7F9FC;border-radius:20px;border:1px solid #E5EAF0;padding:28px 20px 20px;margin-bottom:28px;overflow:hidden;}
+.msl4-svgwrap h3{text-align:center;font-size:16px;font-weight:900;margin-bottom:4px;}
+.msl4-svgwrap p{text-align:center;font-size:12.5px;color:#8A9BB0;margin-bottom:20px;}
+
+/* STEPS LIST */
+.msl4-steps{display:flex;flex-direction:column;gap:10px;margin:28px 0;}
+.msl4-si{display:flex;gap:14px;align-items:flex-start;background:white;border:1px solid #E5EAF0;border-radius:14px;padding:14px 18px;box-shadow:0 2px 14px rgba(0,0,0,0.06);transition:all 0.3s;opacity:0;transform:translateY(16px);}
+.msl4-si.show{opacity:1;transform:translateY(0);}
+.msl4-si.cur{border-color:#D97706;background:#FFFBEB;}
+.msl4-si.bri{border-color:rgba(11,110,106,0.3);background:#E4F3F2;}
+.msl4-si.gol{border-color:#0B6E6A;background:linear-gradient(135deg,#E4F3F2,#C8E8E7);box-shadow:0 4px 20px rgba(11,110,106,0.15);}
+.msl4-sinum{width:34px;height:34px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:900;}
+.msl4-sibody h4{font-size:13px;font-weight:800;margin-bottom:3px;}
+.msl4-sibody p{font-size:12px;color:#3A4F60;margin:0;line-height:1.65;}
+.msl4-sitag{display:inline-block;font-size:10px;font-weight:700;padding:2px 9px;border-radius:10px;margin-top:5px;}
+
+/* MODULES */
+.msl4-mlabel{text-align:center;font-size:11px;font-weight:800;color:#8A9BB0;text-transform:uppercase;letter-spacing:1.5px;margin:28px 0 16px;display:flex;align-items:center;gap:10px;}
+.msl4-mlabel::before,.msl4-mlabel::after{content:'';flex:1;height:1px;background:#E5EAF0;}
+.msl4-mgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(175px,1fr));gap:10px;margin-bottom:28px;}
+.msl4-mc{background:white;border:1px solid #E5EAF0;border-radius:14px;padding:16px;text-align:center;box-shadow:0 2px 14px rgba(0,0,0,0.06);transition:all 0.2s;opacity:0;transform:scale(0.95);}
+.msl4-mc.show{opacity:1;transform:scale(1);}
+.msl4-mc:hover{transform:translateY(-2px) scale(1.02);box-shadow:0 8px 32px rgba(0,0,0,0.10);}
+.msl4-mc .ic{font-size:26px;margin-bottom:8px;}
+.msl4-mc .mn{font-size:10px;font-weight:800;color:#8A9BB0;margin-bottom:5px;letter-spacing:0.5px;}
+.msl4-mc h4{font-size:12.5px;font-weight:800;margin-bottom:4px;}
+.msl4-mc p{font-size:11px;color:#8A9BB0;margin:0;line-height:1.6;}
+.msl4-mcbar{height:4px;border-radius:2px;margin-top:10px;background:#E5EAF0;overflow:hidden;}
+.msl4-mcfill{height:100%;border-radius:2px;width:0;transition:width 1.2s ease;}
+
+/* DESTINATION */
+.msl4-dest{background:linear-gradient(135deg,#084E4B,#0B6E6A,#0D8C87);border-radius:18px;padding:32px 28px;text-align:center;color:white;position:relative;overflow:hidden;margin-top:8px;opacity:0;transition:opacity 0.6s,transform 0.6s;transform:translateY(20px);}
+.msl4-dest.show{opacity:1;transform:translateY(0);}
+.msl4-dest::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.04) 1px,transparent 1px);background-size:28px 28px;}
+.msl4-dest .dic{font-size:40px;margin-bottom:12px;display:block;position:relative;}
+.msl4-dest h3{font-size:18px;font-weight:900;margin-bottom:8px;position:relative;}
+.msl4-dest p{font-size:13px;opacity:0.8;max-width:460px;margin:0 auto;line-height:1.85;position:relative;}
+.msl4-dpills{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:16px;position:relative;}
+.msl4-dpill{background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.25);border-radius:20px;padding:5px 14px;font-size:11.5px;font-weight:700;}
+
+/* MOTIVATIONAL END */
+.msl4-end{background:linear-gradient(155deg,#061B19 0%,#0A3330 50%,#061810 100%);padding:60px 28px;text-align:center;position:relative;overflow:hidden;border-radius:16px;margin-top:8px;display:none;}
+.msl4-end::before{content:'';position:absolute;inset:0;background-image:radial-gradient(circle,rgba(255,255,255,0.025) 1px,transparent 1px);background-size:30px 30px;}
+.msl4-end-body{max-width:540px;margin:0 auto;position:relative;}
+.msl4-end-body .ic{font-size:44px;display:block;margin-bottom:18px;}
+.msl4-end h2{font-size:clamp(20px,3.8vw,30px);font-weight:900;color:white;line-height:1.3;margin-bottom:16px;}
+.msl4-end h2 .g{background:linear-gradient(135deg,#FDE68A,#D97706);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.msl4-end p{font-size:14px;color:rgba(255,255,255,0.65);line-height:1.9;margin-bottom:20px;}
+.msl4-divider{width:44px;height:2px;background:linear-gradient(90deg,#0D8C87,#D97706);border-radius:2px;margin:20px auto;}
+.msl4-final{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:20px 24px;}
+.msl4-final p{font-size:14.5px;font-weight:700;color:white;line-height:1.85;margin:0;}
+.msl4-final .hl{background:linear-gradient(135deg,#FDE68A,#D97706);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;font-size:15px;}
+
+@media(max-width:600px){
+  .msl4-wrap{padding:0 12px;}
+  .msl4-bgcards{grid-template-columns:repeat(2,1fr);}
+  .msl4-mgrid{grid-template-columns:1fr 1fr;}
+}
+</style>
+
+<div class="msl4">
+
+<!-- HERO -->
+<div class="msl4-hero">
+  <div class="msl4-htag">نشاط تفاعلي</div>
+  <h1>لا يهم <span class="g">أين أنت الآن</span> —<br>المهم أين <span class="t">ستكون غداً</span></h1>
+  <p>سواء كنت طبيباً أو صيدلانياً أو باحثاً أو أي ممارس صحي — هذا الطريق بُني خصيصاً لك.</p>
+</div>
+
+<div class="msl4-wrap">
+
+<!-- PICKER -->
+<div class="msl4-pick">
+  <div class="msl4-tag">الخطوة الأولى</div>
+  <h2>اختر <em>خلفيتك العلمية الحالية</em></h2>
+  <p class="msl4-lead">لا توجد إجابة خاطئة — كل خلفية لها مسار واضح نحو MSL. اختر ما يصفك الآن.</p>
+
+  <div class="msl4-bgcards">
+    <div class="msl4-bgc" data-bg="pharmacist" data-title="مسارك كصيدلاني — قوة مخفية في انتظار الإطلاق" data-text="معرفتك بالتفاعلات الدوائية وآلية العمل والسمية تجعلك قادراً على حوارات علمية لا يستطيعها كثيرون. <strong>~55% من MSLs عالمياً صيادلة</strong> — أنت في قلب هذا المسار." data-svg="صيدلاني" data-sub="صيدلاني">
+      <div class="ic">💊</div><h4>صيدلاني</h4><p>PharmD / BSc Pharmacy</p><div class="chk"></div>
+    </div>
+    <div class="msl4-bgc" data-bg="doctor" data-title="مسارك كطبيب — المصداقية فورية منذ اللحظة الأولى" data-text="حين تدخل غرفة استشاري أورام كـ MSL بخلفية طبية — الحوار يبدأ من مستوى مختلف. <strong>لقبك الطبي يفتح أبواباً مغلقة</strong> أمام بقية الفريق." data-svg="طبيب" data-sub="طبيب">
+      <div class="ic">👨‍⚕️</div><h4>طبيب</h4><p>MD / MBBS / GP</p><div class="chk"></div>
+    </div>
+    <div class="msl4-bgc" data-bg="researcher" data-title="مسارك كباحث — تحليل البيانات هو قلب MSL" data-text="فهمك لتصميم الدراسات والإحصاء السريري يجعلك تُناقش الأبحاث بعمق لا يُنافَس. <strong>الأطباء الأكاديميون يحترمون هذا الصوت</strong> أكثر من أي صوت آخر." data-svg="باحث علمي" data-sub="باحث علمي">
+      <div class="ic">🔬</div><h4>باحث علمي</h4><p>MSc / PhD Sciences</p><div class="chk"></div>
+    </div>
+    <div class="msl4-bgc" data-bg="nurse" data-title="مسارك كممرض متخصص — الرؤية السريرية الحقيقية" data-text="رأيت المريض من أقرب نقطة ممكنة — هذا يمنحك منظوراً لا يمتلكه أحد في فريق Medical Affairs. <strong>الشركات تبحث عن هذه الرؤية الميدانية</strong> بشدة." data-svg="ممرض / NP" data-sub="ممرض / NP">
+      <div class="ic">🩺</div><h4>ممرض / NP</h4><p>Nursing / Clinical</p><div class="chk"></div>
+    </div>
+    <div class="msl4-bgc" data-bg="dentist" data-title="مسارك كطبيب أسنان — بوابة الأجهزة الطبية والبيوتك" data-text="خلفيتك الجراحية ومعرفتك بالمنتجات الطبية تجعلك مرشحاً مثالياً في شركات الأجهزة الطبية. <strong>هذا القطاع ينمو بسرعة في الخليج</strong> وحاجته لـ MSLs تتضاعف." data-svg="طبيب أسنان" data-sub="طبيب أسنان">
+      <div class="ic">🦷</div><h4>طبيب أسنان</h4><p>DDS / Dental Surgery</p><div class="chk"></div>
+    </div>
+    <div class="msl4-bgc" data-bg="other" data-title="مسارك — التنوع ثروة في عالم MSL" data-text="المجال الصحي يحتاج تخصصات نادرة في دور MSL — من تغذية إلى فيزيوتيرابي إلى صحة عامة. <strong>تخصصك النادر قد يكون ميزتك التنافسية الأولى</strong> في قطاع لا يزال يبحث عن تنوع." data-svg="متخصص صحي" data-sub="متخصص صحي">
+      <div class="ic">🏥</div><h4>متخصص آخر</h4><p>أي خلفية صحية / علمية</p><div class="chk"></div>
+    </div>
+  </div>
+
+  <button class="msl4-btn" id="msl4-btn" onclick="msl4Show()">
+    أرني طريقي نحو MSL ←
+  </button>
+</div>
+
+<!-- BRIDGE -->
+<div class="msl4-bridge" id="msl4-bridge">
+
+  <div class="msl4-pmsg" id="msl4-pmsg">
+    <span class="pic">🎯</span>
+    <div>
+      <h3 id="msl4-pt"></h3>
+      <p id="msl4-pp"></p>
+    </div>
+  </div>
+
+  <!-- SVG STAIRCASE -->
+  <div class="msl4-svgwrap">
+    <h3>🪜 درجات الصعود من حيث أنت إلى MSL</h3>
+    <p>كل وحدة في الدورة تُضيف درجة — والقمة واضحة من البداية</p>
+    <svg viewBox="0 0 760 380" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:760px;display:block;margin:0 auto;">
+      <defs>
+        <linearGradient id="m4tealV" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#0D8C87"/><stop offset="100%" stop-color="#084E4B"/></linearGradient>
+        <linearGradient id="m4gold" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#D97706"/><stop offset="100%" stop-color="#92660A"/></linearGradient>
+        <linearGradient id="m4s1" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#B2DFDB"/><stop offset="100%" stop-color="#80CBC4"/></linearGradient>
+        <linearGradient id="m4s2" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#80CBC4"/><stop offset="100%" stop-color="#4DB6AC"/></linearGradient>
+        <linearGradient id="m4s3" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#4DB6AC"/><stop offset="100%" stop-color="#26A69A"/></linearGradient>
+        <linearGradient id="m4s4" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#26A69A"/><stop offset="100%" stop-color="#00897B"/></linearGradient>
+        <filter id="m4glow" x="-10%" y="-30%" width="120%" height="160%"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+        <filter id="m4sh" x="-5%" y="-5%" width="115%" height="130%"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-color="#0B6E6A" flood-opacity="0.18"/></filter>
+        <marker id="m4arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto"><polygon points="0 0, 10 3.5, 0 7" fill="#0D8C87"/></marker>
+      </defs>
+
+      <line x1="20" y1="342" x2="740" y2="342" stroke="#E5EAF0" stroke-width="2"/>
+
+      <!-- Ground -->
+      <rect x="580" y="282" width="160" height="60" rx="8" fill="url(#m4gold)" filter="url(#m4sh)"/>
+      <rect x="580" y="335" width="160" height="10" rx="3" fill="#7A4F08" opacity="0.5"/>
+      <text x="660" y="308" text-anchor="middle" fill="white" font-size="13" font-weight="bold" font-family="Cairo,sans-serif">📍 أنت الآن</text>
+      <text id="msl4-svglbl" x="660" y="326" text-anchor="middle" fill="rgba(255,255,255,0.9)" font-size="11" font-family="Cairo,sans-serif">اختر خلفيتك</text>
+
+      <!-- Step 1 -->
+      <rect x="460" y="222" width="280" height="60" fill="url(#m4s1)" filter="url(#m4sh)"/>
+      <rect x="460" y="275" width="280" height="10" fill="#5BADA8" opacity="0.5"/>
+      <rect x="460" y="222" width="12" height="60" fill="#5BADA8" opacity="0.4"/>
+      <text x="590" y="247" text-anchor="middle" fill="#0B4A47" font-size="12" font-weight="bold" font-family="Cairo,sans-serif">① توليد الرؤى الميدانية</text>
+      <text x="590" y="265" text-anchor="middle" fill="#0B4A47" font-size="10" font-family="Cairo,sans-serif">Medical Insights</text>
+
+      <!-- Step 2 -->
+      <rect x="340" y="162" width="400" height="60" fill="url(#m4s2)" filter="url(#m4sh)"/>
+      <rect x="340" y="215" width="400" height="10" fill="#35908A" opacity="0.5"/>
+      <rect x="340" y="162" width="12" height="60" fill="#35908A" opacity="0.4"/>
+      <text x="530" y="187" text-anchor="middle" fill="#073734" font-size="12" font-weight="bold" font-family="Cairo,sans-serif">② سلامة المرضى والتيقظ الدوائي</text>
+      <text x="530" y="205" text-anchor="middle" fill="#073734" font-size="10" font-family="Cairo,sans-serif">Patient Safety &amp; Pharmacovigilance</text>
+
+      <!-- Step 3 -->
+      <rect x="220" y="102" width="520" height="60" fill="url(#m4s3)" filter="url(#m4sh)"/>
+      <rect x="220" y="155" width="520" height="10" fill="#1E7A75" opacity="0.5"/>
+      <rect x="220" y="102" width="12" height="60" fill="#1E7A75" opacity="0.4"/>
+      <text x="470" y="127" text-anchor="middle" fill="white" font-size="12" font-weight="bold" font-family="Cairo,sans-serif">③ الابتكار الطبي والـ Pipeline</text>
+      <text x="470" y="146" text-anchor="middle" fill="rgba(255,255,255,0.9)" font-size="10" font-family="Cairo,sans-serif">Medical Innovation &amp; Clinical Trials</text>
+
+      <!-- Step 4 -->
+      <rect x="100" y="42" width="640" height="60" fill="url(#m4s4)" filter="url(#m4sh)"/>
+      <rect x="100" y="95" width="640" height="10" fill="#00695C" opacity="0.5"/>
+      <rect x="100" y="42" width="12" height="60" fill="#00695C" opacity="0.4"/>
+      <text x="410" y="67" text-anchor="middle" fill="white" font-size="12" font-weight="bold" font-family="Cairo,sans-serif">④ التنظيمات والتشريعات — Regulatory &amp; Compliance</text>
+      <text x="410" y="86" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="10" font-family="Cairo,sans-serif">IFPMA · FDA · EMA · أخلاقيات العمل الميداني</text>
+
+      <!-- MSL TOP -->
+      <rect x="20" y="0" width="720" height="42" rx="10" fill="url(#m4tealV)" filter="url(#m4glow)"/>
+      <text x="380" y="17" text-anchor="middle" fill="white" font-size="14" font-weight="bold" font-family="Cairo,sans-serif">🏆 Medical Science Liaison — MSL</text>
+      <text x="380" y="34" text-anchor="middle" fill="rgba(255,255,255,0.85)" font-size="10.5" font-family="Cairo,sans-serif">راتب 30,000 – 60,000 ريال · KOL Relationships · تأثير إقليمي</text>
+
+      <!-- Arrow -->
+      <line x1="730" y1="335" x2="730" y2="50" stroke="#0D8C87" stroke-width="2" stroke-dasharray="6,4" opacity="0.5" marker-end="url(#m4arr)"/>
+      <text x="747" y="200" text-anchor="middle" fill="#0B6E6A" font-size="9" font-weight="bold" font-family="Cairo,sans-serif" transform="rotate(90,747,200)">طريقك للأعلى</text>
+    </svg>
+  </div>
+
+  <!-- STEPS LIST -->
+  <div class="msl4-tag" style="margin-top:4px;">وحدات الدورة = درجات السلم</div>
+  <h2>كل وحدة <em>درجة حقيقية للأعلى</em></h2>
+  <p class="msl4-lead" style="margin-bottom:16px;">أربع وحدات مُصممة لتبني كفاءات MSL بشكل تراكمي — كل واحدة تُكمل التي قبلها.</p>
+
+  <div class="msl4-steps">
+    <div class="msl4-si cur" id="msl4-s0">
+      <div class="msl4-sinum" style="background:#FFFBEB;color:#D97706;">📍</div>
+      <div class="msl4-sibody">
+        <h4>أنت الآن — <span id="msl4-s0sub">ممارس صحي</span></h4>
+        <p>خلفيتك العلمية هي نقطة انطلاقك — وهي أقوى مما تظن. MSL لا يُبنى من الصفر، بل من فوق ما لديك.</p>
+        <span class="msl4-sitag" style="background:#FFFBEB;color:#92660A;">نقطة الانطلاق</span>
+      </div>
+    </div>
+    <div class="msl4-si bri" id="msl4-s1">
+      <div class="msl4-sinum" style="background:#E4F3F2;color:#0B6E6A;font-size:16px;">١</div>
+      <div class="msl4-sibody">
+        <h4>توليد الرؤى الميدانية — Medical Insights</h4>
+        <p>تتعلم كيف تُحوّل كل لقاء مع طبيب إلى معلومة استراتيجية قيّمة — لا مجرد زيارة روتينية تُسجَّل وتُنسى.</p>
+        <span class="msl4-sitag" style="background:#E4F3F2;color:#0B6E6A;">الوحدة الأولى من الطريق</span>
+      </div>
+    </div>
+    <div class="msl4-si bri" id="msl4-s2">
+      <div class="msl4-sinum" style="background:#E4F3F2;color:#0B6E6A;font-size:16px;">٢</div>
+      <div class="msl4-sibody">
+        <h4>سلامة المرضى والتيقظ الدوائي — Patient Safety &amp; PV</h4>
+        <p>تفهم كيف تُحمي المريض وتُحمي نفسك قانونياً — أحد أهم الكفاءات التي تُفرّق MSL المحترف عن غيره.</p>
+        <span class="msl4-sitag" style="background:#E4F3F2;color:#0B6E6A;">الوحدة الثانية من الطريق</span>
+      </div>
+    </div>
+    <div class="msl4-si bri" id="msl4-s3">
+      <div class="msl4-sinum" style="background:#E4F3F2;color:#0B6E6A;font-size:16px;">٣</div>
+      <div class="msl4-sibody">
+        <h4>الابتكار الطبي والـ Pipeline — Medical Innovation</h4>
+        <p>تصبح قادراً على مناقشة أدوية المستقبل وتجارب المرحلة الثالثة مع KOLs بثقة وعمق علمي حقيقي.</p>
+        <span class="msl4-sitag" style="background:#E4F3F2;color:#0B6E6A;">الوحدة الثالثة من الطريق</span>
+      </div>
+    </div>
+    <div class="msl4-si bri" id="msl4-s4">
+      <div class="msl4-sinum" style="background:#E4F3F2;color:#0B6E6A;font-size:16px;">٤</div>
+      <div class="msl4-sibody">
+        <h4>التنظيمات والتشريعات — Regulatory &amp; Compliance</h4>
+        <p>تعرف الحدود القانونية والأخلاقية التي تحكم عمل MSL — ولماذا احترامها هو سر المصداقية لا عائق أمامها.</p>
+        <span class="msl4-sitag" style="background:#E4F3F2;color:#0B6E6A;">الوحدة الرابعة من الطريق</span>
+      </div>
+    </div>
+    <div class="msl4-si gol" id="msl4-s5">
+      <div class="msl4-sinum" style="background:#0B6E6A;color:white;font-size:18px;">🏆</div>
+      <div class="msl4-sibody">
+        <h4>Medical Science Liaison — MSL جاهز للميدان</h4>
+        <p>بعد إتمام الدورة تمتلك المعرفة والأدوات واللغة العلمية التي تؤهّلك للتقدم بثقة لأي وظيفة MSL في المنطقة.</p>
+        <span class="msl4-sitag" style="background:#0B6E6A;color:white;">الوجهة النهائية 🎯</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- SKILLS -->
+  <div class="msl4-mlabel">مهاراتك التي يجب بناؤها لتكون MSL متمكن</div>
+  <div class="msl4-mgrid">
+    <div class="msl4-mc" id="msl4-mc1"><div class="ic">🔬</div><div class="mn">المهارة ١</div><h4>توليد الأدلة العلمية</h4><p>Evidence Generation</p><div class="msl4-mcbar"><div class="msl4-mcfill" style="background:#0B6E6A;" data-w="100%"></div></div></div>
+    <div class="msl4-mc" id="msl4-mc2"><div class="ic">🛡️</div><div class="mn">المهارة ٢</div><h4>سلامة المرضى</h4><p>Patient Safety</p><div class="msl4-mcbar"><div class="msl4-mcfill" style="background:#1A4F8A;" data-w="100%"></div></div></div>
+    <div class="msl4-mc" id="msl4-mc3"><div class="ic">🧬</div><div class="mn">المهارة ٣</div><h4>الابتكار الطبي</h4><p>Innovation</p><div class="msl4-mcbar"><div class="msl4-mcfill" style="background:#5B2D8E;" data-w="100%"></div></div></div>
+    <div class="msl4-mc" id="msl4-mc4"><div class="ic">🎓</div><div class="mn">المهارة ٤</div><h4>التعليم والتوعية</h4><p>Education &amp; Awareness</p><div class="msl4-mcbar"><div class="msl4-mcfill" style="background:#B91C1C;" data-w="100%"></div></div></div>
+  </div>
+
+</div><!-- end bridge -->
+</div><!-- end wrap -->
+
+</div>
+
+<script>
+var msl4sel = null;
+
+document.querySelectorAll('.msl4-bgc').forEach(function(c){
+  c.addEventListener('click', function(){
+    document.querySelectorAll('.msl4-bgc').forEach(function(x){ x.classList.remove('sel'); x.querySelector('.chk').textContent=''; });
+    c.classList.add('sel');
+    c.querySelector('.chk').textContent = '✓';
+    msl4sel = c;
+    document.getElementById('msl4-btn').classList.add('ready');
+  });
+});
+
+function msl4Show(){
+  if(!msl4sel) return;
+  document.getElementById('msl4-pt').textContent = msl4sel.dataset.title;
+  document.getElementById('msl4-pp').innerHTML = msl4sel.dataset.text;
+  document.getElementById('msl4-s0sub').textContent = msl4sel.dataset.sub;
+  document.getElementById('msl4-svglbl').textContent = msl4sel.dataset.svg;
+
+  var br = document.getElementById('msl4-bridge');
+  br.classList.add('vis');
+  br.scrollIntoView({behavior:'smooth', block:'start'});
+
+  var steps = document.querySelectorAll('.msl4-si');
+  steps.forEach(function(s,i){ setTimeout(function(){ s.classList.add('show'); }, i*150); });
+
+  var mcs = document.querySelectorAll('.msl4-mc');
+  mcs.forEach(function(mc,i){
+    setTimeout(function(){
+      mc.classList.add('show');
+      var f = mc.querySelector('.msl4-mcfill');
+      if(f) f.style.width = f.dataset.w;
+    }, 600 + i*180);
+  });
+}
+</script>
+
+</body>
+</html>
